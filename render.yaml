@@ -2,23 +2,28 @@ services:
   - type: web
     name: inventario-arystore
     env: docker
-    dockerfilePath: Dockerfile
     plan: free
     autoDeploy: true
+    region: oregon
+    healthCheckPath: /
+    dockerContext: .
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: APP_ENV
         value: production
+      - key: APP_DEBUG
+        value: false
       - key: APP_KEY
-        sync: false
+        generateValue: true
       - key: DB_CONNECTION
         value: mysql
       - key: DB_HOST
-        sync: false
+        value: your-db-host
       - key: DB_PORT
         value: 3306
       - key: DB_DATABASE
-        sync: false
+        value: your-db-name
       - key: DB_USERNAME
-        sync: false
+        value: your-db-user
       - key: DB_PASSWORD
-        sync: false
+        value: your-db-password
