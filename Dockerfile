@@ -1,38 +1,34 @@
-# Usa PHP 7.2 (compatible con Laravel 5.5)
+# Imagen base con PHP 7.2 y Apache
 FROM php:7.2-apache
 
-# Instala extensiones requeridas por Laravel
+# Instalar dependencias del sistema
 RUN apt-get update && apt-get install -y \
     libpng-dev \
-    libjpeg62-turbo-dev \
+    libjpeg-dev \
     libfreetype6-dev \
     zip \
     unzip \
     git \
     curl \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql mbstring tokenizer bcmath
 
-# Habilitar mod_rewrite para Laravel
-RUN a2enmod rewrite
+# Instalar Composer (versión 1 para compatibilidad con Laravel antiguo)
+RUN curl -sS https://getcomposer.org/installer | php -- --version=1.10.26 --install-dir=/usr/local/bin --filename=composer
 
-# Instalar Composer 1 (compatible con Laravel 5.5)
-COPY --from=composer:1.10 /usr/bin/composer /usr/bin/composer
-
-# Configurar directorio de trabajo
+# Configurar el directorio de la app
 WORKDIR /var/www/html
 
-# Copiar archivos del proyecto
-COPY . .
+# Copiar proyecto
+COPY . /var/www/html
 
-# Instalar dependencias de Laravel
+# Instalar dependencias PHP
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Dar permisos de escritura a storage y bootstrap/cache
+# Dar permisos a storage y bootstrap
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Exponer puerto 80
 EXPOSE 80
 
-# Iniciar Apache
 CMD ["apache2-foreground"]
