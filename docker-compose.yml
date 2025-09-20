@@ -6,45 +6,37 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: laravel_app
-    ports:
-      - "8080:80"
+    restart: unless-stopped
     volumes:
       - .:/var/www/html
+    ports:
+      - "8080:80"
     depends_on:
       - db
-    environment:
-      DB_CONNECTION: mysql
-      DB_HOST: db
-      DB_PORT: 3306
-      DB_DATABASE: laravel
-      DB_USERNAME: root
-      DB_PASSWORD: root
 
   db:
     image: mysql:5.7
     container_name: laravel_db
-    restart: always
+    restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: laravel
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: laravel
-      MYSQL_PASSWORD: laravel
-    ports:
-      - "3307:3306"
+      MYSQL_PASSWORD: secret
     volumes:
-      - db_data:/var/lib/mysql
+      - dbdata:/var/lib/mysql
+    ports:
+      - "3306:3306"
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: laravel_phpmyadmin
-    restart: always
-    depends_on:
-      - db
-    ports:
-      - "8081:80"
+    restart: unless-stopped
     environment:
       PMA_HOST: db
       MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "8081:80"
 
 volumes:
-  db_data:
+  dbdata:
