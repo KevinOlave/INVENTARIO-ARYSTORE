@@ -1,0 +1,13 @@
+NOTA SOBRE ACTUALIZACION DE LARAVEL
+
+Este repo ha sido preparado para desplegar en Render usando PHP 7.4 mediante Docker.
+De esta forma NO es necesario actualizar Laravel inmediatamente; el contenedor ejecuta PHP 7.4
+y la aplicación (Laravel 5.5) debería instalar dependencias tal como en tu entorno original.
+
+Si quieres actualizar Laravel a 9.x/10.x (PHP 8+), ese proceso es más complejo e implica:
+ - Actualizar composer.json requerimientos (laravel/framework, php versions, paquetes auxiliares).
+ - Ejecutar composer update y resolver incompatibilidades.
+ - Ajustar middleware, helpers y código que cambió entre versiones.
+ - Ejecutar las migraciones y pruebas localmente.
+
+Puedo ayudarte con la actualización paso a paso si lo prefieres. Por ahora he preparado un Dockerfile y render.yaml para desplegar sin errores en Render, ya que es la forma más rápida y segura.
